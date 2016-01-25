@@ -1,6 +1,7 @@
 module Sprite (..) where
 
 import Html.Attributes exposing (..)
+import Math.Vector2
 import Html exposing (..)
 
 

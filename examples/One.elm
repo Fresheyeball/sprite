@@ -18,15 +18,18 @@ sprite =
 main : Signal Html
 main =
     let
-        f _ ( i, _ ) =
-            ( i + 1
-            , render
+        sprite' i =
+            render
                 { sprite | frame = ( i % sprite.columns, 0 ) }
                 []
                 []
+
+        f _ ( i, _ ) =
+            ( i + 1
+            , Html.div [] (List.map (always (sprite' i)) [0..3000])
             )
     in
-        Signal.foldp f ( 0, Html.div [] [] ) (Time.fps 2)
+        Signal.foldp f ( 0, Html.div [] [] ) (Time.fps 60)
             |> Signal.map snd
 
 
