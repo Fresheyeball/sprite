@@ -14,10 +14,6 @@ type alias Sprite a =
     }
 
 
-type alias Dope =
-    List ( Int, Int )
-
-
 render : Sprite a -> List Attribute -> List ( String, String ) -> Html
 render { sheet, rows, columns, size, frame } attrs baseStyle =
     let
@@ -29,7 +25,7 @@ render { sheet, rows, columns, size, frame } attrs baseStyle =
 
         height = sizeY // rows
 
-        width = sizeX // columns
+        width = Debug.log "width" <| sizeX // columns
 
         backgroundImage =
             ( "background-image", "url(" ++ sheet ++ ")" )
@@ -40,7 +36,7 @@ render { sheet, rows, columns, size, frame } attrs baseStyle =
 
                 posY = frameY * height * -1 |> px
             in
-                ( "background-position", posY ++ " " ++ posX )
+                ( "background-position", posX ++ " " ++ posY )
 
         style' =
             style

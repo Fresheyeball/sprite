@@ -21,7 +21,7 @@ main =
         f _ ( i, _ ) =
             ( i + 1
             , render
-                { sprite | frame = ( 0, i % (sprite.columns + 2) ) }
+                { sprite | frame = ( i % sprite.columns, 0 ) }
                 []
                 []
             )
