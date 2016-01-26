@@ -3,7 +3,14 @@ module One (..) where
 import Sprite exposing (..)
 import Html exposing (Html, node)
 import Html.Attributes exposing (style)
-import Time
+import Effects exposing (..)
+import StartApp exposing (..)
+import Task exposing (Task)
+import Time exposing (..)
+
+
+type Action
+    = Tick Time
 
 
 sample : Sprite {}
@@ -16,28 +23,37 @@ sample =
     }
 
 
+view : Int -> Html
+view i =
+    node
+        "sample"
+        [ style
+            <| sprite
+                { sample | frame = ( i % sample.columns, 0 ) }
+        ]
+        []
+
+
+update : Action -> Int -> ( Int, Effects Action )
+update _ i =
+    ( i + 1, none )
+
+
+app : App Int
+app =
+    StartApp.start
+        { view = always view
+        , update = update
+        , init = ( 0, none )
+        , inputs = [ Signal.map Tick (fps 60) ]
+        }
+
+
 main : Signal Html
 main =
-    let
-        sprite' i =
-            node
-                "sample"
-                [ style
-                    <| sprite
-                        { sample | frame = ( i % sample.columns, 0 ) }
-                ]
-                []
-
-        f _ ( i, _ ) =
-            ( i + 1
-            , Html.div [] (List.map (always (sprite' i)) [0..10])
-            )
-    in
-        Signal.foldp f ( 0, Html.div [] [] ) (Time.fps 60)
-            |> Signal.map snd
+    app.html
 
 
-
--- main : Html
--- main =
---     render sprite [] []
+port tasks : Signal (Task Never ())
+port tasks =
+    app.tasks
