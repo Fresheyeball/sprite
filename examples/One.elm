@@ -1,16 +1,17 @@
 module One (..) where
 
 import Sprite exposing (..)
-import Html exposing (Html)
+import Html exposing (Html, node)
+import Html.Attributes exposing (style)
 import Time
 
 
-sprite : Sprite {}
-sprite =
-    { sheet = "/examples/One.jpg"
-    , rows = 1
-    , columns = 10
-    , size = ( 300, 25 )
+sample : Sprite {}
+sample =
+    { sheet = "https://10firstgames.files.wordpress.com/2012/02/actionstashhd.png"
+    , rows = 16
+    , columns = 16
+    , size = ( 2048, 2048 )
     , frame = ( 0, 0 )
     }
 
@@ -19,14 +20,17 @@ main : Signal Html
 main =
     let
         sprite' i =
-            render
-                { sprite | frame = ( i % sprite.columns, 0 ) }
-                []
+            node
+                "sample"
+                [ style
+                    <| sprite
+                        { sample | frame = ( i % sample.columns, 0 ) }
+                ]
                 []
 
         f _ ( i, _ ) =
             ( i + 1
-            , Html.div [] (List.map (always (sprite' i)) [0..3000])
+            , Html.div [] (List.map (always (sprite' i)) [0..10])
             )
     in
         Signal.foldp f ( 0, Html.div [] [] ) (Time.fps 60)

@@ -1,9 +1,5 @@
 module Sprite (..) where
 
-import Html.Attributes exposing (..)
-import Math.Vector2
-import Html exposing (..)
-
 
 type alias Sprite a =
     { a
@@ -15,8 +11,8 @@ type alias Sprite a =
     }
 
 
-render : Sprite a -> List Attribute -> List ( String, String ) -> Html
-render { sheet, rows, columns, size, frame } attrs baseStyle =
+sprite : Sprite a -> List ( String, String )
+sprite { sheet, rows, columns, size, frame } =
     let
         px x = toString x ++ "px"
 
@@ -38,15 +34,11 @@ render { sheet, rows, columns, size, frame } attrs baseStyle =
                 posY = frameY * height * -1 |> px
             in
                 ( "background-position", posX ++ " " ++ posY )
-
-        style' =
-            style
-                <| backgroundImage
-                :: ( "height", px height )
-                :: ( "width", px width )
-                :: ( "display", "block" )
-                :: ( "background-repeat", "no-repeat" )
-                :: backgroundPosition
-                :: baseStyle
     in
-        node "sprite" (style' :: attrs) []
+        backgroundImage
+            :: ( "height", px height )
+            :: ( "width", px width )
+            :: ( "display", "block" )
+            :: ( "background-repeat", "no-repeat" )
+            :: backgroundPosition
+            :: []
