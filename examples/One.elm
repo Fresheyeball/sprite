@@ -2,13 +2,13 @@ module One (..) where
 
 import Sprite exposing (..)
 import Html exposing (..)
-import Html.Events exposing (..)
+import Html.Events exposing (on, targetValue)
 import Html.Attributes as A
-import Effects exposing (..)
-import StartApp exposing (..)
-import Signal exposing (..)
-import Time exposing (..)
+import Effects exposing (Effects, none)
+import Signal exposing (message, Address)
+import Time exposing (Time, fps)
 import String
+import StartApp
 
 
 type Action
@@ -33,6 +33,12 @@ view address s =
             String.toInt
                 >> Result.withDefault 0
                 >> RowChange
+
+        onInput address contentToValue =
+            on
+                "input"
+                targetValue
+                (message address << contentToValue)
     in
         div
             []
@@ -53,11 +59,6 @@ view address s =
             ]
 
 
-onInput : Signal.Address a -> (String -> a) -> Attribute
-onInput address contentToValue =
-    on "input" targetValue (Signal.message address << contentToValue)
-
-
 update : Action -> Sprite {} -> ( Sprite {}, Effects Action )
 update action s =
     let
@@ -74,7 +75,7 @@ update action s =
         ( s', none )
 
 
-app : App (Sprite {})
+app : StartApp.App (Sprite {})
 app =
     StartApp.start
         { view = view
@@ -87,9 +88,3 @@ app =
 main : Signal Html
 main =
     app.html
-
-
-
--- port tasks : Signal (Task Never ())
--- port tasks =
---     app.tasks
