@@ -35,7 +35,7 @@ type alias Sprite a =
 
 
 {-|
-The ordered frame cordinates representing an animation
+The ordered frame coordinates representing an animation
 -}
 type alias Dope =
     Array ( Int, Int )
