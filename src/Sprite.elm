@@ -1,5 +1,7 @@
 module Sprite (..) where
 
+import Array exposing (Array)
+
 
 type alias Sprite a =
     { a
@@ -7,18 +9,29 @@ type alias Sprite a =
         , rows : Int
         , columns : Int
         , size : ( Int, Int )
-        , frame : ( Int, Int )
+        , frame : Int
+        , dope : Dope
     }
 
 
+type alias Dope =
+    Array ( Int, Int )
+
+
 sprite : Sprite a -> List ( String, String )
-sprite { sheet, rows, columns, size, frame } =
+sprite { sheet, rows, columns, size, dope, frame } =
     let
         px x = toString x ++ "px"
 
         ( sizeX, sizeY ) = size
 
-        ( frameX, frameY ) = frame
+        ( frameX, frameY ) =
+            case Array.get frame dope of
+                Nothing ->
+                    ( 0, 0 )
+
+                Just x ->
+                    x
 
         height = sizeY // rows
 
