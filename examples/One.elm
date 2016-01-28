@@ -22,7 +22,7 @@ init =
     , columns = 16
     , size = ( 2048, 2048 )
     , frame = 0
-    , dope = walk
+    , dope = idle
     }
 
 
@@ -34,11 +34,6 @@ dopeRow y =
 idle : Dope
 idle =
     dopeRow 0 |> Array.fromList
-
-
-walk : Dope
-walk =
-    dopeRow 2 ++ dopeRow 3 |> Array.fromList
 
 
 view : Address Action -> Sprite {} -> Html
@@ -63,9 +58,9 @@ update : Action -> Sprite {} -> ( Sprite {}, Effects Action )
 update action s =
     let
         s' =
-            case Debug.watch "action" action of
+            case action of
                 Tick _ ->
-                    { s | frame = (s.frame + 1) % Array.length s.dope }
+                    advance s
     in
         ( s', none )
 

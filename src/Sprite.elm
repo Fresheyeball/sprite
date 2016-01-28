@@ -35,7 +35,7 @@ sprite { sheet, rows, columns, size, dope, frame } =
 
         height = sizeY // rows
 
-        width = Debug.log "width" <| sizeX // columns
+        width = sizeX // columns
 
         backgroundImage =
             ( "background-image", "url(" ++ sheet ++ ")" )
@@ -55,3 +55,24 @@ sprite { sheet, rows, columns, size, dope, frame } =
             :: ( "background-repeat", "no-repeat" )
             :: backgroundPosition
             :: []
+
+
+advance : Sprite a -> Sprite a
+advance s =
+    { s | frame = (s.frame + 1) % Array.length s.dope }
+
+
+advanceClamp : Sprite a -> Sprite a
+advanceClamp s =
+    { s
+        | frame =
+            let
+                len = Array.length s.dope - 1
+            in
+                if
+                    s.frame >= len
+                then
+                    len
+                else
+                    s.frame + 1
+    }
