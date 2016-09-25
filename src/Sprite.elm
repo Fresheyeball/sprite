@@ -1,4 +1,4 @@
-module Sprite (..) where
+module Sprite exposing (..)
 
 {-|
 A few simple things for Sprite rendering with elm-html.
@@ -50,9 +50,11 @@ are used for sizing, along with `display:block` for custom nodes.
 sprite : Sprite a -> List ( String, String )
 sprite { sheet, rows, columns, size, dope, frame } =
     let
-        px x = toString x ++ "px"
+        px x =
+            toString x ++ "px"
 
-        ( sizeX, sizeY ) = size
+        ( sizeX, sizeY ) =
+            size
 
         ( frameX, frameY ) =
             case Array.get frame dope of
@@ -62,18 +64,22 @@ sprite { sheet, rows, columns, size, dope, frame } =
                 Just x ->
                     x
 
-        height = sizeY // rows
+        height =
+            sizeY // rows
 
-        width = sizeX // columns
+        width =
+            sizeX // columns
 
         backgroundImage =
             ( "background-image", "url(" ++ sheet ++ ")" )
 
         backgroundPosition =
             let
-                posX = frameX * width * -1 |> px
+                posX =
+                    frameX * width * -1 |> px
 
-                posY = frameY * height * -1 |> px
+                posY =
+                    frameY * height * -1 |> px
             in
                 ( "background-position", posX ++ " " ++ posY )
     in
@@ -102,11 +108,10 @@ advanceClamp s =
     { s
         | frame =
             let
-                len = Array.length s.dope - 1
+                len =
+                    Array.length s.dope - 1
             in
-                if
-                    s.frame >= len
-                then
+                if s.frame >= len then
                     len
                 else
                     s.frame + 1

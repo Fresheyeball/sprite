@@ -1,14 +1,11 @@
-module One (..) where
+module One exposing (..)
 
 import Sprite exposing (..)
 import Array
 import Html exposing (..)
-import Html.Events exposing (on, targetValue)
 import Html.Attributes as A
-import Effects exposing (Effects, none)
-import Signal exposing (message, Address)
-import Time exposing (Time, fps)
-import StartApp
+import Html.App exposing (..)
+import Time exposing (Time, every, millisecond)
 
 
 type Action
@@ -36,25 +33,18 @@ idle =
     dopeRow 0 |> Array.fromList
 
 
-view : Address Action -> Sprite {} -> Html
-view address s =
-    let
-        onInput address contentToValue =
-            on
-                "input"
-                targetValue
-                (message address << contentToValue)
-    in
-        div
+view : Sprite {} -> Html Action
+view s =
+    div
+        []
+        [ node
+            "sprite"
+            [ A.style (sprite s) ]
             []
-            [ node
-                "sprite"
-                [ A.style (sprite s) ]
-                []
-            ]
+        ]
 
 
-update : Action -> Sprite {} -> ( Sprite {}, Effects Action )
+update : Action -> Sprite {} -> ( Sprite {}, Cmd Action )
 update action s =
     let
         s' =
@@ -62,19 +52,14 @@ update action s =
                 Tick _ ->
                     advance s
     in
-        ( s', none )
+        ( s', Cmd.none )
 
 
-app : StartApp.App (Sprite {})
-app =
-    StartApp.start
-        { view = view
-        , update = update
-        , init = ( init, none )
-        , inputs = [ Signal.map Tick (fps 30) ]
-        }
-
-
-main : Signal Html
+main : Program Never
 main =
-    app.html
+    program
+        { init = ( init, Cmd.none )
+        , update = update
+        , view = view
+        , subscriptions = always <| every (millisecond * 33) Tick
+        }
