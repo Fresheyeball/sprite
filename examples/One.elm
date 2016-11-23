@@ -2,9 +2,8 @@ module One exposing (..)
 
 import Sprite exposing (..)
 import Array
-import Html exposing (..)
 import Html.Attributes as A
-import Html.App exposing (..)
+import Html exposing (..)
 import Time exposing (Time, every, millisecond)
 
 
@@ -25,7 +24,7 @@ init =
 
 dopeRow : Int -> List ( Int, Int )
 dopeRow y =
-    List.map (\x -> ( x, y )) [0..15]
+    List.map (\x -> ( x, y )) (List.range 0 15)
 
 
 idle : Dope
@@ -47,15 +46,15 @@ view s =
 update : Action -> Sprite {} -> ( Sprite {}, Cmd Action )
 update action s =
     let
-        s' =
+        newS =
             case action of
                 Tick _ ->
                     advance s
     in
-        ( s', Cmd.none )
+        ( newS, Cmd.none )
 
 
-main : Program Never
+main : Program Never (Sprite {}) Action
 main =
     program
         { init = ( init, Cmd.none )
