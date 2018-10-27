@@ -1,15 +1,15 @@
-module One exposing (..)
+module One exposing (Msg(..), dopeRow, idle, init, main, update, view)
 
-import Sprite exposing (..)
 import Array
+import Browser exposing (element)
 import Html exposing (..)
 import Html.Attributes as A
-import Html.App exposing (..)
-import Time exposing (Time, every, millisecond)
+import Sprite exposing (..)
+import Time exposing (Posix, every)
 
 
-type Action
-    = Tick Time
+type Msg
+    = Tick Posix
 
 
 init : Sprite {}
@@ -25,7 +25,7 @@ init =
 
 dopeRow : Int -> List ( Int, Int )
 dopeRow y =
-    List.map (\x -> ( x, y )) [0..15]
+    List.range 0 15 |> List.map (\x -> ( x, y ))
 
 
 idle : Dope
@@ -33,33 +33,33 @@ idle =
     dopeRow 0 |> Array.fromList
 
 
-view : Sprite {} -> Html Action
+view : Sprite {} -> Html Msg
 view s =
     div
         []
         [ node
             "sprite"
-            [ A.style (sprite s) ]
+            (sprite s |> List.map (\( n, v ) -> A.style n v))
             []
         ]
 
 
-update : Action -> Sprite {} -> ( Sprite {}, Cmd Action )
+update : Msg -> Sprite {} -> ( Sprite {}, Cmd Msg )
 update action s =
     let
-        s' =
+        s_ =
             case action of
                 Tick _ ->
                     advance s
     in
-        ( s', Cmd.none )
+    ( s_, Cmd.none )
 
 
-main : Program Never
+main : Program () (Sprite {}) Msg
 main =
-    program
-        { init = ( init, Cmd.none )
+    element
+        { init = always ( init, Cmd.none )
         , update = update
         , view = view
-        , subscriptions = always <| every (millisecond * 33) Tick
+        , subscriptions = always <| every 33 Tick
         }
