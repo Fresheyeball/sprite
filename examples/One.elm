@@ -1,15 +1,15 @@
-module One exposing (..)
+module One exposing (Msg(..), dopeRow, idle, init, main, update, view)
 
-import Sprite exposing (..)
 import Array
+import Browser exposing (element)
 import Html exposing (..)
 import Html.Attributes as A
-import Browser exposing (element)
+import Sprite exposing (..)
 import Time exposing (Posix, every)
 
 
 type Msg
-    = Tick Posix 
+    = Tick Posix
 
 
 init : Sprite {}
@@ -39,12 +39,12 @@ view s =
         []
         [ node
             "sprite"
-            (sprite s |> List.map (\(n, v) -> A.style n v)) 
+            (sprite s |> List.map (\( n, v ) -> A.style n v))
             []
         ]
 
 
-update : Msg -> Sprite {} -> ( Sprite {}, Cmd Msg)
+update : Msg -> Sprite {} -> ( Sprite {}, Cmd Msg )
 update action s =
     let
         s_ =
@@ -52,7 +52,8 @@ update action s =
                 Tick _ ->
                     advance s
     in
-        ( s_, Cmd.none )
+    ( s_, Cmd.none )
+
 
 main : Program () (Sprite {}) Msg
 main =
