@@ -1,17 +1,14 @@
-module Sprite exposing (..)
+module Sprite exposing (Sprite, Dope, sprite, advance, advanceClamp)
 
-{-|
-A few simple things for Sprite rendering with elm-html.
+{-| A few simple things for Sprite rendering with elm-html.
 
 Usage is intended to be via the `sprite` function generating
 styles for `Html.Attributes.style`. For example
 
-```
-node
-    "sprite"
-    [ style (sprite s) ]
-    []
-```
+    node
+        "sprite"
+        [ style (sprite s) ]
+        []
 
 @docs Sprite, Dope, sprite, advance, advanceClamp
 
@@ -20,8 +17,7 @@ node
 import Array exposing (Array)
 
 
-{-|
-A sprite sheet
+{-| A sprite sheet
 -}
 type alias Sprite a =
     { a
@@ -34,15 +30,13 @@ type alias Sprite a =
     }
 
 
-{-|
-The ordered frame coordinates representing an animation
+{-| The ordered frame coordinates representing an animation
 -}
 type alias Dope =
     Array ( Int, Int )
 
 
-{-|
-Process a sprite into styles for application with
+{-| Process a sprite into styles for application with
 `elm-html`. Styles place the sprite sheet as a `background-image`
 and animate by altering the `background-position`. `height`, `width`
 are used for sizing, along with `display:block` for custom nodes.
@@ -81,27 +75,25 @@ sprite { sheet, rows, columns, size, dope, frame } =
                 posY =
                     frameY * height * -1 |> px
             in
-                ( "background-position", posX ++ " " ++ posY )
+            ( "background-position", posX ++ " " ++ posY )
     in
-        backgroundImage
-            :: ( "height", px height )
-            :: ( "width", px width )
-            :: ( "display", "block" )
-            :: ( "background-repeat", "no-repeat" )
-            :: backgroundPosition
-            :: []
+    backgroundImage
+        :: ( "height", px height )
+        :: ( "width", px width )
+        :: ( "display", "block" )
+        :: ( "background-repeat", "no-repeat" )
+        :: backgroundPosition
+        :: []
 
 
-{-|
-Move the sprite forward one frame, such that it will loop when it reaches the end
+{-| Move the sprite forward one frame, such that it will loop when it reaches the end
 -}
 advance : Sprite a -> Sprite a
 advance s =
-    { s | frame = (s.frame + 1) % Array.length s.dope }
+    { s | frame = modBy (Array.length s.dope) (s.frame + 1) }
 
 
-{-|
-Move the sprite forward one frame, such that it will stop when it reaches the end
+{-| Move the sprite forward one frame, such that it will stop when it reaches the end
 -}
 advanceClamp : Sprite a -> Sprite a
 advanceClamp s =
@@ -111,8 +103,9 @@ advanceClamp s =
                 len =
                     Array.length s.dope - 1
             in
-                if s.frame >= len then
-                    len
-                else
-                    s.frame + 1
+            if s.frame >= len then
+                len
+
+            else
+                s.frame + 1
     }
