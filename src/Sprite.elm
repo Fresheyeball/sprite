@@ -45,7 +45,7 @@ sprite : Sprite a -> List ( String, String )
 sprite { sheet, rows, columns, size, dope, frame } =
     let
         px x =
-            toString x ++ "px"
+            (String.fromInt) x ++ "px"
 
         ( sizeX, sizeY ) =
             size
